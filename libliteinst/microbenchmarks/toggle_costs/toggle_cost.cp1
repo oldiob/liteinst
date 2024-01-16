@@ -1,0 +1,122 @@
+
+/*
+  Benchmark description:
+  Measures average probe activation and deactivation costs of a probe via Finstrumentor ProbeProvider API.
+   */
+
+#include "liteinst.hpp"
+#include "process.hpp"
+#include "cycle.h"
+#include "funcs.hpp"
+
+#include <string>
+#include <cassert>
+#include <cstdlib>
+
+using namespace std;
+using namespace utils::process;
+using namespace liteinst;
+
+#define OUTLIER 1000000
+
+long invoke_count = 0;
+long invoke_exit_count = 0;
+long max_probe_id = 0;
+long DEFAULT_FUNC_ID = 1;
+long NUM_FUNCS = 10;
+
+ticks* deactivation_costs;
+ticks* activation_costs;
+
+/*
+void instrumentation(ProbeArg func_id)
+  __attribute__((no_instrument_function));
+void callback(const ProbeMetaData* pmd)
+  __attribute__((no_instrument_function));
+*/ 
+
+/* void instrumentation(ProbeArg func_id) { */
+/*   invoke_count++; */
+/* } */
+
+void instrumentation() {
+  invoke_count++;
+}
+
+void instrumentation_exit() {
+  invoke_exit_count++;
+}
+
+
+/* void callback(const ProbeMetaData* pmd) { */
+
+/*   // printf("probe id : %lu\n", pmd->probe_id); */
+/*   assert(pmd->probe_id == 0 || pmd->probe_id == max_probe_id + 1); */
+/*   // if(pmd->probe_id > max_probe_id) { */
+/*     max_probe_id = pmd->probe_id; */
+/*   // } */
+
+/*   PROBE_PROVIDER->initialize(pmd->probe_id, DEFAULT_FUNC_ID); */
+/*   try { */
+/*     PROBE_PROVIDER->activate(pmd->probe_id, instrumentation); */
+/*   } catch (int e) { */
+/*     fprintf(stderr, "Error while activating probe of function : %s.\n", */
+/*         pmd->func_name.c_str()); */
+/*     exit(EXIT_FAILURE); */
+/*   } */
+
+/* } */
+
+void callback(const ProbeInfo* pi) {
+
+  /* // printf("probe id : %lu\n", pmd->probe_id); */
+  /* assert(pmd->probe_id == 0 || pmd->probe_id == max_probe_id + 1); */
+  /* // if(pmd->probe_id > max_probe_id) { */
+  /*   max_probe_id = pmd->probe_id; */
+  /* // } */
+
+  /* PROBE_PROVIDER->initialize(pmd->probe_id, DEFAULT_FUNC_ID); */
+  /* try { */
+  /*   PROBE_PROVIDER->activate(pmd->probe_id, instrumentation); */
+  /* } catch (int e) { */
+  /*   fprintf(stderr, "Error while activating probe of function : %s.\n", */
+  /*       pmd->func_name.c_str()); */
+  /*   exit(EXIT_FAILURE); */
+  /* } */
+
+}
+
+
+int main(int argc, char* argv[]) {
+
+
+  /*  fprintf(stderr, "Benchmark probe initialization..\n"); */
+
+  if (argc == 1) {
+    printf("NO ARGS: Running with default NUM_FUNCS : %ld..\n", NUM_FUNCS); 
+  } else {
+    NUM_FUNCS = atoi(argv[1]);
+    printf("Running with NUM_FUNCS : %ld..\n", NUM_FUNCS); 
+  }
+
+  ProbeProvider* p;
+
+  p = liteinst::ProbeProvider::initializeGlobalProbeProvider(
+      ProviderType::LITEPROBES,nullptr,nullptr); 
+
+  InstrumentationProvider i_provider("instr", instrumentation, instrumentation_exit);
+
+  p->registerInstrumentationProvider(i_provider);
+  printf("Registered probe provider..\n");
+  
+  Coordinates coords;
+  // coords.setFunction(liteinst::Function("*~_ZnwmPv/.*instrumentation.*"));
+  coords.setFunction(liteinst::Function(".*emptyFunc.*"));
+  coords.setProbePlacement(ProbePlacement::BOUNDARY);
+
+  ProbeRegistration pr = p->registerProbes(coords, "instr"); 
+  
+  Process process; 
+
+  printf("getProbedFunctions: %d\n", pr.getProbedFunctions().size()); 
+  max_probe_id = pr.getProbedFunctions().size();

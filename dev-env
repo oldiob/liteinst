@@ -1,0 +1,5 @@
+#!/bin/sh
+guix shell                    \
+     --pure                   \
+     --manifest=.manifest.scm \
+     -- $@

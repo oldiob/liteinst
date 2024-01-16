@@ -1,0 +1,22 @@
+a.out
+.#*
+\#*\#
+*~
+.DS_Store
+.stack-work
+.cabal-sandbox
+cabal.sandbox.config
+bench*.log
+dist/
+
+# Don't check in build products:
+*.a
+*.so
+*.o
+*.hi
+*.exe
+*.dSYM
+*.bak
+
+# A place to put junk
+not_tracked/
