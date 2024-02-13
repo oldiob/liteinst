@@ -5,7 +5,7 @@ DEPS_ROOT= $(ROOT)/deps
 
 EXTRA_WARNS= -pedantic 
 
-override CFLAGS += --std=c++11 -g -Wall $(EXTRA_WARNS) -DAUDIT
+override CFLAGS += --std=c++11 -O2 -g -Wall $(EXTRA_WARNS) -DAUDIT
 # CFLAGS=-DPROBE_TRUE_EMPTY_ON -DPROBE_CPU_TIME
 # CFLAGS=-DPROBE_HIST_ON -DPROBE_CPU_TIME
 
@@ -53,10 +53,10 @@ libutils.a: $(OBJ) elph
 	$(RM) -rf temp
 
 .cpp.o:
-	$(CXX+) -fPIC -c -Wall -o $@ $<
+	$(CXX+) -O2 -fPIC -c -Wall -o $@ $<
 
 .c.o:
-	$(CC+) -fPIC -c -Wall -o $@ $<
+	$(CC+) -O2 -fPIC -c -Wall -o $@ $<
 
 clean:
 	$(RM) -f $(OBJ) *.o *.a *.so $(INSTALL)/libutils.* $(DEP_OBJ)

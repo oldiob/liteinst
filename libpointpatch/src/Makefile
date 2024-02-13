@@ -17,7 +17,7 @@ OBJ0 = $(CODE:.cpp=.o)
 OBJ  = $(OBJ0:.c=.o)
 
 EXTRA_FLAGS = 
-CFLAGS = -g
+CFLAGS = -g -O2
 
 COMMON = $(wildcard $(ROOT)/common/src/patch/*.c)
 COMMON_OBJ = $(COMMON:.c=.o)
@@ -42,4 +42,4 @@ libpointpatch.a: $(OBJ) $(COMMON_OBJ)
 	$(RM) -rf temp
 
 .c.o:
-	  $(CC) -std=gnu99 $(INCLUDES) $(EXTRA_FLAGS) $(CFLAGS) $(OPTS) -fPIC -c -Wall  -o $@ $<
+	  $(CC) -O2 -std=gnu99 $(INCLUDES) $(EXTRA_FLAGS) $(CFLAGS) $(OPTS) -fPIC -c -Wall  -o $@ $<

@@ -39,10 +39,10 @@ OBJ  = $(OBJ0:.c=.o)
 all: libliteinst.so
 
 libliteinst.so: $(OBJ)
-	$(CXX+) $(LIBS) -shared -Wl,-soname,libliteinst.so  -Wl,-init,init_point_patcher -o libliteinst.so $(OBJ) $(DEPS) # -Wl,-init,boostrap
+	$(CXX+) $(LIBS) -O2 -shared -Wl,-soname,libliteinst.so  -Wl,-init,init_point_patcher -o libliteinst.so $(OBJ) $(DEPS) # -Wl,-init,boostrap
 
 .cpp.o:
-	$(CXX+) -fPIC -c -Wall -o $@ $<
+	$(CXX+) -O2 -fPIC -c -Wall -o $@ $<
 
 clean:
 	$(FIND) . \( -name '*.o' -o -name '*.a' -o -name '*.so' \) -type f -delete
