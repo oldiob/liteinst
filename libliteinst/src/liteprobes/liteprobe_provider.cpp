@@ -524,12 +524,6 @@ ProbeRegistration LiteProbeProvider::registerProbes(Coordinates coords,
           });
   }
 
-  FILE* fp = fopen("probes.out", "w");
-
-  if (fp == nullptr) {
-    assert(false);
-  } 
-
   // printf("After generating probe registration..\n\n");
 
   LiteProbeInjector lpi;
@@ -576,7 +570,6 @@ ProbeRegistration LiteProbeProvider::registerProbes(Coordinates coords,
       }
 
       for (auto it : pg->probe_sites) {
-        fprintf(fp, "%04x,", it.first); 
         ProbeContext context;
         context.pg_id = pg->pg_id;
         context.i_id = instrumentation.id;
@@ -630,8 +623,6 @@ outer:
 
   ticks init_end = getticks();
 
-  fclose(fp);
-
   for (string failed : failed_funcs) {
     pr->pg_by_function.erase(failed);
   }
@@ -651,10 +642,6 @@ outer:
   printf("FAILED_PROBESITES: %ld\n", failed_probes);
   printf("SKIPPED_PROBESITES: %ld\n\n", skipped_probes);
   */
-
-  FILE* stats_fp = fopen("stats.out", "a");
-  fprintf(stats_fp, "%ld", num_probes);
-  fclose(stats_fp);
 
 #endif
 
