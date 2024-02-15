@@ -355,13 +355,8 @@ int64_t CodeJitter::getSpringboardSize(const CoalescedProbes& cp,
   int num_trampolines = probes.size();
 
   int64_t trampoline_size = 0;
-  if (provider.getInstrumentation() != NULL) {
-    trampoline_size = g_short_circuit_near_size + g_context_save_size + 
-      g_args_size + g_call_size +  g_context_restore_size;  
-  } else {
-    trampoline_size = provider.getProbeSize();
-  }
-  
+    trampoline_size = g_short_circuit_near_size + g_context_save_size +
+      g_args_size + g_call_size +  g_context_restore_size;
   int64_t springboard_size = relocation_size + num_trampolines * 
     trampoline_size;
 
